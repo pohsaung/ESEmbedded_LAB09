@@ -102,10 +102,10 @@ void usart1_handler(void)//IRQ37
 	if( READ_BIT(USART1_BASE + USART_SR_OFFSET, ORE_BIT) )//
 		{
 			
-			char *fuck = "fuck up!\r\n";
+			char *hi= "TA hihi !\r\n";
 			blink_count(LED_RED, 3);
-			while (*fuck != '\0')
-				usart1_send_char(*fuck++);
+			while (*hi != '\0')
+				usart1_send_char(*hi++);
 
 			WRITE_BITS(USART1_BASE+USART_DR_OFFSET,8,0,0);//
 			usart1_send_char('\n');
@@ -182,7 +182,7 @@ int _isatty(int file)
 int main(void)
 {
 
-    init_usart1();
+
 
     init_usart1();
 

@@ -80,46 +80,46 @@ void usart1_send_char(const char ch)
 {
 
 	while(!READ_BIT(USART1_BASE+USART_SR_OFFSET,TXE_BIT))
-		;//不能傳時(TXE=0)不做事
-	REG(USART1_BASE+USART_DR_OFFSET)=ch;//可以傳時，把DATA放到Data reg
+		;
+	REG(USART1_BASE+USART_DR_OFFSET)=ch;
 	
 }
 
 char usart1_receive_char(void)
 {
 	while(!READ_BIT(USART1_BASE+USART_SR_OFFSET,RXNE_BIT))
-		;//不能收時(RXE=0)不做事
-	return (char)REG(USART1_BASE+USART_DR_OFFSET);//可以收時，把DATA reg 回傳
+		;
+	return (char)REG(USART1_BASE+USART_DR_OFFSET);
 
 }
-void usart1_handler(void)//IRQ37中斷轉跳的地方//可能為Recive data to read或Overrun error detect
+void usart1_handler(void)//IRQ37 Overrun error detect
 {
 
 	char ch;
 	
-	if( READ_BIT(USART1_BASE + USART_SR_OFFSET, ORE_BIT) )//若有Overrun error
+	if( READ_BIT(USART1_BASE + USART_SR_OFFSET, ORE_BIT) )
 		{
 			
-			char *fuck = "fuck up!\r\n";
+			char *hi ="TA u sucess \r\n";
 			blink_count(LED_RED, 3);
-			while (*fuck != '\0')
-				usart1_send_char(*fuck++);
+			while (*hi != '\0')
+				usart1_send_char(*hi++);
 
-			WRITE_BITS(USART1_BASE+USART_DR_OFFSET,8,0,0);//清空Data reg
+			WRITE_BITS(USART1_BASE+USART_DR_OFFSET,8,0,0);//
 			usart1_send_char('\n');
 		}
 	else//Recive data to read
 	{	
 		ch = usart1_receive_char();
 		if (ch == '\r')//enter 時,
-			usart1_send_char('\n');//幫你換行
+			usart1_send_char('\n');//
 
-		usart1_send_char(ch);//顯示在電腦上
-		blink_count(LED_GREEN, 3);//可以刪掉這行
+		usart1_send_char(ch);//
+		blink_count(LED_GREEN, 3);//
 	}
 	
 
-	// clean interrupt flag//清掉中斷旗幟
+	// clean interrupt flag//
 	CLEAR_BIT(USART1_BASE + USART_SR_OFFSET, RXNE_BIT);
 	
 }
@@ -147,8 +147,8 @@ int main(void)
 
     init_usart1();
 
-    //char *ch = malloc(3 * sizeof(char));
-	char *ch = _sbrk(3 * sizeof(char));
+    char *ch = malloc(3 * sizeof(char));
+	//char *ch = _sbrk(3 * sizeof(char));
 	
     if (ch != NULL)
     {
